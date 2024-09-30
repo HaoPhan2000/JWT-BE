@@ -67,7 +67,7 @@ const Controller = {
       const service = await loginCustomerService({ email, password });
       res.cookie(text.refreshTokenName, service.refresh_token, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         path: "/",
         sameSite: "strict",
         maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -84,7 +84,7 @@ const Controller = {
       const newToken = await refreshTokenService(refresh_token);
       res.cookie(text.refreshTokenName, newToken.newRefreshToken, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         path: "/",
         sameSite: "strict",
         maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -141,7 +141,7 @@ const Controller = {
       await User.findByIdAndUpdate(req?.user?.id, { refreshToken: null });
       res.clearCookie(text.refreshTokenName, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         path: "/",
         sameSite: "strict",
       });
