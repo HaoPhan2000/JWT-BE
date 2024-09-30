@@ -1,6 +1,7 @@
+require("dotenv").config();
 const corsOptions = {
   origin: (origin, callback) => {
-    const whitelist = ["http://localhost:5173"];
+    const whitelist = [process.env.Domain];
 
     if (!origin || whitelist.includes(origin)) {
       return callback(null, true);
