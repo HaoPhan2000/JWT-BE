@@ -3,16 +3,16 @@ const {
   forgotPasswordService,
   createCustomerService,
   loginCustomerService,
-  getUserService,
+  getRankService,
   refreshTokenService,
   verifyOtp,
+  updateScoreService,
 } = require("../services/userService");
 const fs = require("fs");
 const otpService = require("../services/otpService");
 const sendEmailService = require("../services/EmailService");
 const text = require("../constants/text");
 const User = require("../models/userModel");
-const { verify } = require("jsonwebtoken");
 const Controller = {
   register: async (req, res) => {
     try {
@@ -112,29 +112,28 @@ const Controller = {
         },
         template
       );
-      res
-        .status(200)
-        .json({
-          EM: "Vui lòng truy cập địa chỉ gmail hoàn tất cập nhật mật khẩu",
-        });
+      res.status(200).json({
+        EM: "Vui lòng truy cập địa chỉ gmail hoàn tất cập nhật mật khẩu",
+      });
     } catch (error) {
       console.log(error);
       res.status(400).json(error);
     }
   },
   resetPassword: async (req, res) => {
-    const { user_id,token,password } = req.body;
+    const { user_id, token, password } = req.body;
     try {
-      const reset=await resetPasswordService({
-        user_id,token,password
-      })
-      
+      const reset = await resetPasswordService({
+        user_id,
+        token,
+        password,
+      });
+
       res.status(200).json(reset);
     } catch (error) {
       console.log(error);
       res.status(400).json(error);
     }
-  
   },
   logout: async (req, res) => {
     try {
@@ -161,8 +160,17 @@ const Controller = {
 
   rank: async (req, res) => {
     try {
-      const data = await getUserService();
+      const data = await getRankService();
       res.status(200).json(data);
+    } catch (error) {
+      res.status(400).json(error);
+    }
+  },
+  updateScore: async (req, res) => {
+    try {
+      const { score } = req.body;
+      console.log(req)
+      await updateScoreService(req?.user?.id,score);
     } catch (error) {
       res.status(400).json(error);
     }

@@ -116,17 +116,17 @@ const resetPasswordService = async (dataUser) => {
     const secret = process.env.Private_KeyResetPassword + user.password;
     const payload = jwt.verify(token, secret);
     const hashPassWord = await bcrypt.hash(password, saltRounds);
-    await User.findByIdAndUpdate(payload.id,{password:hashPassWord});
+    await User.findByIdAndUpdate(payload.id, { password: hashPassWord });
 
-    return new CustomMessage("Đặt lại mật khẩu thành công")
+    return new CustomMessage("Đặt lại mật khẩu thành công");
   } catch (error) {
     throw error;
   }
 };
-const getUserService = async () => {
+const getRankService = async () => {
   try {
-    const rank = await User.find({}).select("-password -refreshToken");
-    if(!rank) throw new CustomMessage("không tìm thấy bảng xếp hạng")
+    const rank = await User.find({}).select("-password -refreshToken").sort({"score":-1});
+    if (!rank) throw new CustomMessage("không tìm thấy bảng xếp hạng");
     return rank;
   } catch (error) {
     throw error;
@@ -173,12 +173,25 @@ const refreshTokenService = async (refreshToken) => {
     throw error;
   }
 };
+const updateScoreService = async (id, score) => {
+  console.log(id)
+  try {
+    const user = await User.findByIdAndUpdate(id, { $max: { score } });
+    if (!user) {
+      throw new CustomMessage("Không tìm thấy user");
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   resetPasswordService,
   forgotPasswordService,
   refreshTokenService,
   createCustomerService,
   loginCustomerService,
-  getUserService,
+  getRankService,
   verifyOtp,
+  updateScoreService,
 };
