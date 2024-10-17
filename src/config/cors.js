@@ -1,7 +1,7 @@
 require("dotenv").config();
 const corsOptions = {
   origin: (origin, callback) => {
-    const whitelist = [process.env.Domain];
+    const whitelist = process.env.Domain.split(",");
 
     if (!origin || whitelist.includes(origin)) {
       return callback(null, true);
